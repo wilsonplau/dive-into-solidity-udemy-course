@@ -3,11 +3,38 @@
 pragma solidity >=0.5.0 <0.9.0;
 
 contract KnowledgeTest {
+    address public owner;
     string[] public tokens = ["BTC", "ETH"];
     address[] public players;
 
-    function changeTokens() public view {
-        string[] memory t = tokens;
+    constructor() {
+        owner = msg.sender;
+    }
+
+    function changeTokens() public {
+        string[] storage t = tokens;
         t[0] = "VET";
+    }
+
+    receive() external payable {
+        // Do nothing
+    }
+
+    function getBalance() public view returns (uint256) {
+        return address(this).balance;
+    }
+
+    function transferAll(address _addr) external {
+        require(msg.sender == owner, "ONLY_OWNER");
+        uint256 balance = address(this).balance;
+        (bool sent, ) = payable(_addr).call{value: balance}("");
+    }
+
+    function start() external {
+        players.push(msg.sender);
+    }
+
+    function concatenate(string memory a, string memory b) public pure returns (string memory) {
+        return string(abi.encodePacked(a, b));
     }
 }
