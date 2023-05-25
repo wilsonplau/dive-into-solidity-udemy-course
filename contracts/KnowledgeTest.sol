@@ -26,15 +26,18 @@ contract KnowledgeTest {
 
     function transferAll(address _addr) external {
         require(msg.sender == owner, "ONLY_OWNER");
-        uint256 balance = address(this).balance;
-        (bool sent, ) = payable(_addr).call{value: balance}("");
+        (bool success, ) = payable(_addr).call{value: getBalance()}("");
+        require(success, "Transfer failed.");
     }
 
     function start() external {
         players.push(msg.sender);
     }
 
-    function concatenate(string memory a, string memory b) public pure returns (string memory) {
+    function concatenate(
+        string memory a,
+        string memory b
+    ) public pure returns (string memory) {
         return string(abi.encodePacked(a, b));
     }
 }
